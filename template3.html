@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bajo las estrellas ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: radial-gradient(circle at center, #2e1065 0%, #020617 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Fondo de estrellas animado */
+        .stars-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.3;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .hidden { display: none; }
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        .img-container {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            border-radius: 1.5rem;
+            border: 2px solid rgba(244, 114, 182, 0.3);
+        }
+        .img-container img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        /* Botón Neón */
+        .btn-neon {
+            background: linear-gradient(45deg, #db2777, #7c3aed);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-neon:hover {
+            box-shadow: 0 0 20px rgba(219, 39, 119, 0.6);
+            transform: scale(1.02);
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #020617;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .floating-heart {
+            font-size: 50px;
+            animation: float 2s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 5px #f472b6); }
+            50% { transform: translateY(-20px) scale(1.1); filter: drop-shadow(0 0 20px #f472b6); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="stars-container"></div>
+
+    <div id="loader">
+        <div class="floating-heart mb-6">💖</div>
+        <p class="text-pink-400 font-light tracking-[0.2em] animate-pulse">CREANDO MAGIA...</p>
+        <p id="load-status" class="text-white/30 text-xs mt-2">0%</p>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="mai.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="main-content" class="hidden glass-card p-8 max-w-sm w-full text-center relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-600/20 blur-3xl rounded-full"></div>
+        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-pink-600/20 blur-3xl rounded-full"></div>
+
+        <div id="step-1" class="proposal-step fade-in">
+            <div class="text-6xl mb-6">🪐</div>
+            <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-400 mb-4">
+                Hola, mi vida
+            </h1>
+            <p class="text-gray-300 mb-8 leading-relaxed font-light">
+                Quiero invitarte a dar un paseo por los momentos que han iluminado mi universo.
+            </p>
+            <button onclick="nextStep(2)" class="btn-neon w-full text-white font-bold py-4 rounded-2xl">
+                Ver nuestra historia ✨
+            </button>
+        </div>
+
+        <div id="step-2" class="proposal-step hidden fade-in">
+            <div class="img-container mb-6"><img src="imagenes/img1.jpg"></div>
+            <h2 class="text-xl font-bold text-pink-300 mb-2">Donde todo empezó</h2>
+            <p class="text-gray-400 mb-6 text-sm">Aquel día en el gym cambió todo. Una simple salida por salchipapas fue el inicio de mi mejor aventura.</p>
+            <button onclick="nextStep(3)" class="btn-neon w-full py-3 rounded-xl">Continuar...</button>
+        </div>
+
+        <div id="step-3" class="proposal-step hidden fade-in">
+            <div class="img-container mb-6"><img src="imagenes/img2.jpg"></div>
+            <h2 class="text-xl font-bold text-pink-300 mb-2">Sin dudas</h2>
+            <p class="text-gray-400 mb-6 text-sm">Te dije que no quería ser tu amigo porque sabía que eras la persona que quería amar de verdad.</p>
+            <button onclick="nextStep(4)" class="btn-neon w-full py-3 rounded-xl">Siguiente recuerdo</button>
+        </div>
+
+        <div id="step-4" class="proposal-step hidden fade-in">
+            <div class="img-container mb-6"><img src="imagenes/img3.jpg"></div>
+            <h2 class="text-xl font-bold text-pink-300 mb-2">22 de Septiembre</h2>
+            <p class="text-gray-400 mb-6 text-sm">El día que te pedí pololear. Una fecha grabada en mi alma como el inicio de algo eterno.</p>
+            <button onclick="nextStep(5)" class="btn-neon w-full py-3 rounded-xl">Siguiente</button>
+        </div>
+
+        <div id="step-5" class="proposal-step hidden fade-in">
+            <div class="img-container mb-6"><img src="imagenes/img4.jpg"></div>
+            <h2 class="text-xl font-bold text-pink-300 mb-2">Mi Coincidencia</h2>
+            <p class="text-gray-400 mb-6 text-sm">Eres mi familia, mi hogar y mi lugar seguro. Eres la coincidencia más linda de mi vida.</p>
+            <button onclick="nextStep(6)" class="btn-neon w-full py-3 rounded-xl">Casi llegamos...</button>
+        </div>
+
+        <div id="step-6" class="proposal-step hidden fade-in">
+            <div class="img-container mb-6"><img src="imagenes/img5.jpg"></div>
+            <h2 class="text-xl font-bold text-pink-300 mb-2">Un secreto...</h2>
+            <p class="text-gray-400 mb-6 text-sm">Hice esto porque hay una pregunta que mi corazón necesita hacerte antes de tiempo.</p>
+            <button onclick="nextStep(7)" class="btn-neon w-full py-3 rounded-xl">Ver la pregunta 🌹</button>
+        </div>
+
+        <div id="step-7" class="proposal-step hidden fade-in">
+            <div class="text-6xl mb-6 animate-bounce">💖</div>
+            <h2 class="text-2xl font-bold text-white mb-4">Francisca...</h2>
+            <p class="text-pink-300 text-lg mb-8 italic">¿Me harías el honor de ser mi San Valentín este año?</p>
+            <div class="flex flex-col gap-4 relative" style="min-height: 160px;">
+                <button onclick="celebrate()" class="btn-neon w-full text-white font-bold py-4 rounded-2xl shadow-lg z-10">¡SÍ, ACEPTO! ♾️</button>
+                <button id="no-btn" onmouseover="moveButton()" onclick="moveButton()" class="w-full bg-white/5 text-white/30 py-2 rounded-2xl border border-white/10 transition-all text-xs">No</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="success-modal" class="hidden fixed inset-0 bg-[#020617]/95 backdrop-blur-xl flex items-center justify-center p-6 z-50">
+        <div class="glass-card p-10 text-center max-w-xs w-full border-pink-500/50">
+            <div class="text-6xl mb-6">🌌</div>
+            <h2 class="text-3xl font-bold text-pink-400 mb-4">¡SÍ!</h2>
+            <p class="text-gray-300 mb-8 font-light italic">Prometo amarte hasta que el universo se quede sin estrellas. Te amo, Francisca.</p>
+            <button onclick="sendWhatsApp()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2">
+                Responder por WhatsApp 📱
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const assets = ['imagenes/img1.jpg', 'imagenes/img2.jpg', 'imagenes/img3.jpg', 'imagenes/img4.jpg', 'imagenes/img5.jpg'];
+        let loaded = 0;
+
+        function showContent() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('main-content').classList.remove('hidden');
+        }
+
+        assets.forEach(src => {
+            const img = new Image();
+            img.onload = img.onerror = () => {
+                loaded++;
+                document.getElementById('load-status').innerText = Math.round((loaded/assets.length)*100) + "%";
+                if(loaded >= assets.length) showContent();
+            };
+            img.src = src;
+        });
+
+        setTimeout(showContent, 5000);
+
+        function nextStep(step) {
+            const music = document.getElementById('bg-music');
+            if (music && music.paused) { music.play(); music.volume = 0.5; }
+            document.querySelectorAll('.proposal-step').forEach(el => el.classList.add('hidden'));
+            document.getElementById('step-' + step).classList.remove('hidden');
+        }
+
+        function moveButton() {
+            const btn = document.getElementById('no-btn');
+            btn.style.position = 'fixed';
+            btn.style.left = Math.random() * (window.innerWidth - btn.clientWidth) + 'px';
+            btn.style.top = Math.random() * (window.innerHeight - btn.clientHeight) + 'px';
+        }
+
+        function celebrate() {
+            const end = Date.now() + (15 * 1000);
+            const colors = ['#ec4899', '#8b5cf6', '#ffffff'];
+
+            (function frame() {
+              confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: colors });
+              confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: colors });
+              if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+
+            document.getElementById('success-modal').classList.remove('hidden');
+        }
+
+        function sendWhatsApp() {
+            const telefono = "56959909150";
+            const mensaje = encodeURIComponent("¡SÍ! Acepto ser tu San Valentín hoy y siempre ❤️🌌");
+            window.open(`https://wa.me/${telefono}?text=${mensaje}`, '_blank');
+        }
+    </script>
+</body>
+</html>
