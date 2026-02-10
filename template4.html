@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un Mensaje Especial ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fffaf0; /* Color crema suave */
+        }
+        .handwritten { font-family: 'Caveat', cursive; }
+        
+        .hidden { display: none; }
+        .fade-in { animation: fadeIn 0.7s ease-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Espacio para imágenes (Placeholder) */
+        .image-placeholder {
+            width: 100%;
+            height: 220px;
+            background-color: #fff;
+            border: 2px dashed #fbd38d;
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f6ad55;
+            font-size: 0.8rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Botón Estilo Soft */
+        .btn-soft {
+            background-color: #feebc8;
+            color: #c05621;
+            transition: all 0.3s ease;
+        }
+        .btn-soft:hover {
+            background-color: #fbd38d;
+            transform: translateY(-1px);
+        }
+
+        /* Loader Circular */
+        #loader {
+            position: fixed; inset: 0;
+            background: #fff;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 100;
+        }
+        .loader-circle {
+            width: 50px; height: 50px;
+            border: 3px solid #feebc8;
+            border-top-color: #ed8936;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-6">
+
+    <div id="loader">
+        <div class="loader-circle mb-4"></div>
+        <p class="text-orange-400 font-medium text-sm tracking-widest uppercase">Preparando algo lindo</p>
+        <p id="load-status" class="text-orange-200 text-xs mt-1">0%</p>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="tu-musica.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="main-content" class="hidden max-w-sm w-full">
+        
+        <div id="step-1" class="proposal-step fade-in text-center">
+            <span class="text-orange-300 text-4xl">💌</span>
+            <h1 class="text-3xl font-bold text-orange-900 mt-4 mb-4 handwritten">Título de Bienvenida</h1>
+            <p class="text-gray-500 mb-8 leading-relaxed">Aquí puedes escribir una frase corta para introducir la sorpresa a tu pareja.</p>
+            <button onclick="nextStep(2)" class="w-full btn-soft font-semibold py-4 rounded-2xl shadow-sm">
+                Empezar recorrido
+            </button>
+        </div>
+
+        <div id="step-2" class="proposal-step hidden fade-in">
+            <div class="image-placeholder">
+                <span>[ Foto 1 aquí ]</span>
+                </div>
+            <h2 class="text-xl font-semibold text-orange-800 mb-2">Título del Momento 1</h2>
+            <p class="text-gray-500 mb-6 text-sm">Describe aquí un recuerdo especial, una fecha o una anécdota que vivieron juntos.</p>
+            <button onclick="nextStep(3)" class="w-full btn-soft py-3 rounded-xl font-medium">Continuar</button>
+        </div>
+
+        <div id="step-3" class="proposal-step hidden fade-in">
+            <div class="image-placeholder">
+                <span>[ Foto 2 aquí ]</span>
+            </div>
+            <h2 class="text-xl font-semibold text-orange-800 mb-2">Título del Momento 2</h2>
+            <p class="text-gray-500 mb-6 text-sm">Otro espacio para contar algo importante de su relación y cómo se han sentido este tiempo.</p>
+            <button onclick="nextStep(4)" class="w-full btn-soft py-3 rounded-xl font-medium">Continuar</button>
+        </div>
+
+        <div id="step-4" class="proposal-step hidden fade-in">
+            <div class="image-placeholder">
+                <span>[ Foto 3 aquí ]</span>
+            </div>
+            <h2 class="text-xl font-semibold text-orange-800 mb-2">Título del Momento 3</h2>
+            <p class="text-gray-500 mb-6 text-sm">Puedes usar este espacio para dedicar unas palabras de agradecimiento o amor profundo.</p>
+            <button onclick="nextStep(5)" class="w-full btn-soft py-3 rounded-xl font-medium">Siguiente</button>
+        </div>
+
+        <div id="step-5" class="proposal-step hidden fade-in text-center">
+            <div class="text-5xl mb-6">💝</div>
+            <h2 class="text-2xl font-bold text-orange-900 mb-2 handwritten">Una última pregunta...</h2>
+            <p class="text-gray-600 mb-10">¿Quieres ser mi San Valentín este año?</p>
+            
+            <div class="flex flex-col gap-4 relative" style="min-height: 160px;">
+                <button onclick="celebrate()" class="w-full bg-orange-500 text-white font-bold py-4 rounded-2xl shadow-md z-10 hover:bg-orange-600 transition-colors">
+                    ¡SÍ, ACEPTO!
+                </button>
+                <button id="no-btn" onmouseover="moveButton()" onclick="moveButton()" class="w-full bg-gray-100 text-gray-400 py-2 rounded-2xl text-xs">
+                    No
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="success-modal" class="hidden fixed inset-0 bg-orange-50/95 flex items-center justify-center p-6 z-50">
+        <div class="bg-white p-8 rounded-3xl shadow-xl text-center max-w-xs w-full border border-orange-100">
+            <div class="text-5xl mb-4">✨</div>
+            <h2 class="text-2xl font-bold text-orange-900 mb-2 handwritten">¡Sabía que dirías que sí!</h2>
+            <p class="text-gray-500 mb-8 italic text-sm">"Aquí puedes poner una frase final muy romántica."</p>
+            <button onclick="sendWhatsApp()" class="w-full bg-green-500 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-green-600 transition-all">
+                Enviar confirmación 📱
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Simulación de carga (puedes añadir aquí las rutas reales para que el loader espere)
+        let loaded = 0;
+        const totalAssets = 3; 
+
+        function fakeLoad() {
+            if (loaded < totalAssets) {
+                loaded++;
+                document.getElementById('load-status').innerText = Math.round((loaded/totalAssets)*100) + "%";
+                setTimeout(fakeLoad, 500);
+            } else {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('main-content').classList.remove('hidden');
+            }
+        }
+        setTimeout(fakeLoad, 1000);
+
+        function nextStep(step) {
+            const music = document.getElementById('bg-music');
+            if (music && music.paused) { 
+                music.play().catch(e => console.log("Audio waiting for interaction"));
+                music.volume = 0.5;
+            }
+            document.querySelectorAll('.proposal-step').forEach(el => el.classList.add('hidden'));
+            document.getElementById('step-' + step).classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function moveButton() {
+            const btn = document.getElementById('no-btn');
+            btn.style.position = 'fixed';
+            btn.style.left = Math.random() * (window.innerWidth - btn.clientWidth) + 'px';
+            btn.style.top = Math.random() * (window.innerHeight - btn.clientHeight) + 'px';
+            btn.style.zIndex = "100";
+        }
+
+        function celebrate() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ed8936', '#f6ad55', '#fff5f5']
+            });
+            document.getElementById('success-modal').classList.remove('hidden');
+        }
+
+        function sendWhatsApp() {
+            const telefono = "56959909150"; // Cambiar por tu número real
+            const mensaje = encodeURIComponent("¡SÍ! Acepto ser tu San Valentín ❤️");
+            window.open(`https://wa.me/${telefono}?text=${mensaje}`, '_blank');
+        }
+    </script>
+</body>
+</html>
